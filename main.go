@@ -110,7 +110,7 @@ func main() {
 		err = status.NewError(status.Unknown, fmt.Errorf("error marshalling packaging result (%s):%q", zipName, err))
 		status.ExitFromError(err)
 	}
-	fmt.Println(string(b))
+	fmt.Println(b)
 }
 
 func coletaToCSV(rc *coleta.ResultadoColeta) csv.ResultadoColeta_CSV {
