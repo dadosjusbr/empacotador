@@ -1,0 +1,287 @@
+{
+    "profile": "tabular-data-package",
+    "resources": [
+      {
+        "name": "coleta",
+        "path": "coleta.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+            "fields": [
+                {
+                    "name": "chave_coleta",
+                    "type": "string",
+                    "format": "default",
+                    "title": "Chave coleta",
+                    "description": "The Unique Key of collection",
+                    "description-ptbr": "A chave única da coleta ",
+                    "Constraints": {
+                        "required": true
+                    }
+                },
+                {
+                    "name": "orgao",
+                    "type": "string",
+                    "format": "default",
+                    "title": "órgão",
+                    "description": "The ID of agency",
+                    "description-ptbr": "A sigla da agência",
+                    "Constraints": {
+                        "required": true
+                    }
+                },
+                {
+                    "name": "mes",
+                    "type": "integer",
+                    "format": "default",
+                    "title": "Mês",
+                    "description": "Month of data collection",
+                    "bareNumber": false,
+                    "description-ptbr": "O mês que os dados foram coletados",
+                    "constraints": {
+                        "required": true,
+                        "minimum": "0",
+                        "maximum": "12"
+                    }
+                },
+                {
+                    "name": "ano",
+                    "type": "integer",
+                    "title": "Ano",
+                    "description": "Year of data collection",
+                    "description-ptbr": "O ano que os dados foram coletados",
+                    "constraints": {
+                        "required": true,
+                        "minimum": "0"
+                    }
+                },
+                {
+                    "name": "timestamp_coleta",
+                    "type": "time",
+                    "title": "Ano",
+                    "description": "Timestamp mark of data crawled",
+                    "description-ptbr": "Contém o tempo em que o dado foi coletado.",
+                    "constraints": {
+                        "required": true,
+                        "minimum": "0"
+                    }
+                },  
+                {
+                    "name": "repositorio_coletor",
+                    "title": "Repositório Coletor",
+                    "type": "string",
+                    "description": "The name of the repository that performed the collection",
+                    "format": "default",
+                    "description-ptbr": "O nome do repositório que realizou a coleta",
+                    "constraints": {
+                        "required": true
+                    }
+                },
+                {
+                    "name": "versao_coletor",
+                    "title": "Versão do coletor",
+                    "type": "string",
+                    "description": "Version of the collector that performed the collection",
+                    "format": "default",
+                    "description-ptbr": "Versão do coletor que realizou a coleta",
+                    "constraints": {
+                        "required": true
+                    }
+                },
+                {
+                    "name": "dir_coletor",
+                    "title": "Diretório do coletor",
+                    "type": "string",
+                    "description": "Directory of the collector who performed the collection",
+                    "format": "default",
+                    "description-ptbr": "Diretório do coletor que realizou a coleta",
+                    "constraints": {
+                        "required": true
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "name": "contra_cheque",
+        "path": "contra_cheque.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+            "fields": [
+                {
+                    "name": "id_contra_cheque",
+                    "type": "string",
+                    "format": "default",
+                    "title": "Identificador da folha de pagamento",
+                    "description": "Payroll identifier",
+                    "description-ptbr": "Identificador da folha de pagamento",
+                    "Constraints": {
+                        "required": true
+                    }
+                },
+                {
+                    "name": "chave_coleta",
+                    "type": "string",
+                    "format": "default",
+                    "title": "Chave coleta",
+                    "description": "The Unique Key of collection",
+                    "description-ptbr": "A chave única da coleta ",
+                    "Constraints": {
+                        "required": true
+                    }
+                },
+                {
+                    "name": "nome",
+                    "type": "string",
+                    "format": "default",
+                    "title": "Nome do membro",
+                    "description": "Employee Name",
+                    "description-ptbr": "O nome do membro",
+                    "Constraints": {
+                        "required": true
+                    }
+                },
+                {
+                    "name": "matricula",
+                    "title": "Matrícula do membro",
+                    "type": "string",
+                    "format": "default",
+                    "description": "Employee registration word",
+                    "description-ptbr": "A palavra que refere-se ao identificador de registro do empregado"
+                },
+                {
+                    "name": "funcao",
+                    "title": "Função",
+                    "type": "string",
+                    "description": "Role of the employee",
+                    "format": "default",
+                    "description-ptbr": "A função do membro",
+                    "constraints": {
+                        "required": true
+                    }
+                },
+                {
+                    "name": "local_trabalho",
+                    "title": "Local de trabalho",
+                    "type": "string",
+                    "description": "Employee workplace",
+                    "format": "default",
+                    "description-ptbr": "O local onde o membro está alocado"
+                },
+                {
+                    "name": "tipo",
+                    "title": "Type",
+                    "type": "string",
+                    "description": "Describe if the employee is a servidor, membro, pensionista or indefinido",
+                    "format": "default",
+                    "description-ptbr": "Descreve se o empregado é um servidor ou membro",
+                    "constraints": {
+                        "required": true,
+                        "enum": ["MEMBRO", "SERVIDOR"]
+                    }
+                },
+                {
+                    "name": "ativo",
+                    "title": "Active",
+                    "type": "boolean",
+                    "description": "Active or inactive employee",
+                    "description-ptbr": "Descreve se o funcionário está ativo ou inativo"
+                }
+            ]
+        }
+    },
+    {
+        "name": "remuneracao",
+        "path": "remuneracao.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+            "fields": [
+                {
+                    "name": "id_contra_cheque",
+                    "type": "string",
+                    "format": "default",
+                    "title": "Identificador da folha de pagamento",
+                    "description": "Payroll identifier",
+                    "description-ptbr": "Identificador da folha de pagamento",
+                    "Constraints": {
+                        "required": true
+                    }
+                },
+                {
+                    "name": "chave_coleta",
+                    "type": "string",
+                    "format": "default",
+                    "title": "Chave coleta",
+                    "description": "The Unique Key of collection",
+                    "description-ptbr": "A chave única da coleta ",
+                    "constraints": {
+                        "required": true
+                    }
+                },
+                {
+                    "name": "natureza",
+                    "title": "Natureza",
+                    "type": "string",
+                    "description": "Describe whether it is an income or a discount",
+                    "format": "default",
+                    "description-ptbr": "Descreve se é um rendimento ou um desconto",
+                    "constraints": {
+                        "required": true,
+                        "enum": ["R", "D"]
+                    }
+                },
+                {
+                    "name": "categoria",
+                    "title": "Categoria",
+                    "type": "string",
+                    "description": "Subdivision that is associated",
+                    "format": "default",
+                    "description-ptbr": "Subdivisão que está associado"
+                },
+                {
+                    "name": "item",
+                    "title": "Ítem",
+                    "type": "string",
+                    "description": "item name",
+                    "format": "default",
+                    "description-ptbr": "Nome do ítem",
+                    "constraints": {
+                        "required": true
+                    }
+                },
+                {
+                    "name": "valor",
+                    "title": "Valor",
+                    "type": "number",                    
+                    "description": "Describe employee wage",
+                    "description-ptbr": "Corresponde ao valor do ítem"
+                }
+              ]
+        }
+    }
+    ],
+    "keywords": [
+      "justice-system",
+      "payments",
+      "remunerações",
+      "sistema-de-justiça"
+    ],
+    "name": "remuneracoes-jusbr",
+    "title": "Remunerações do Sistema de Justiça Brasileiro",
+    "description": "Remunerações do Sistema de Justiça Brasileiro, libertadas por DadosJusBR",
+    "homepage": "https://dadosjusbr.org",
+    "version": "1.0.0",
+    "contributors": [
+      {
+        "title": "DadosJusBR",
+        "role": "author"
+      }
+    ],
+    "licenses": [
+        {
+          "name": "CC-BY-4.0",
+          "title": "Creative Commons Attribution 4.0",
+          "path": "https://creativecommons.org/licenses/by/4.0/"
+        }
+    ]
+    
+}
