@@ -33,6 +33,8 @@ func main() {
 		outputPath = "./"
 	}
 	var er pipeline.ResultadoExecucao
+	er.Rc = new(coleta.ResultadoColeta)
+
 	erIN, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		status.ExitFromError(status.NewError(4, fmt.Errorf("error reading crawling result: %q", err)))
