@@ -17,7 +17,7 @@ import (
 	"github.com/dadosjusbr/proto/pipeline"
 	"github.com/frictionlessdata/datapackage-go/datapackage"
 	"github.com/gocarina/gocsv"
-	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/encoding/prototext"
 )
 
 const (
@@ -39,8 +39,8 @@ func main() {
 	if err != nil {
 		status.ExitFromError(status.NewError(4, fmt.Errorf("error reading crawling result: %q", err)))
 	}
-	if err = proto.Unmarshal(erIN, er.Rc); err != nil {
-		status.ExitFromError(status.NewError(5, fmt.Errorf("error unmarshaling crawling resul from STDIN: %q", err)))
+	if err = prototext.Unmarshal(erIN, er.Rc); err != nil {
+		status.ExitFromError(status.NewError(5, fmt.Errorf("error unmarshaling crawling resul from STDIN: %q\n\n %s ", err, string(erIN))))
 	}
 
 	csvRc := coletaToCSV(er.Rc)
@@ -105,7 +105,7 @@ func main() {
 	er.Pr = &pipeline.ResultadoEmpacotamento{
 		Pacote: zipName,
 	}
-	b, err := proto.Marshal(&er)
+	b, err := prototext.Marshal(&er)
 	if err != nil {
 		err = status.NewError(status.Unknown, fmt.Errorf("error marshalling packaging result (%s):%q", zipName, err))
 		status.ExitFromError(err)
