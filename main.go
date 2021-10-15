@@ -24,6 +24,7 @@ const (
 	coletaFileName      = "coleta.csv"                  // hardcoded in datapackage_descriptor.json
 	folhaFileName       = "contra_cheque.csv"           // hardcoded in datapackage_descriptor.json
 	remuneracaoFileName = "remuneracao.csv"             // hardcoded in datapackage_descriptor.json
+	metadadosFileName   = "metadados.csv"               // hardcoded in datapackage_descriptor.json
 	packageFileName     = "datapackage_descriptor.json" // name of datapackage descriptor
 )
 
@@ -72,6 +73,12 @@ func main() {
 	// Creating remuneracao csv
 	if err := toCSVFile(csvRc.Remuneracoes.Remuneracao, remuneracaoFileName); err != nil {
 		err = status.NewError(status.InvalidParameters, fmt.Errorf("error creating Remuneração CSV:%q", err))
+		status.ExitFromError(err)
+	}
+
+	// Creating metadata csv
+	if err := toCSVFile(csvRc.Metadados, metadadosFileName); err != nil {
+		err = status.NewError(status.InvalidParameters, fmt.Errorf("error creating Metadados CSV:%q", err))
 		status.ExitFromError(err)
 	}
 
@@ -125,6 +132,21 @@ func coletaToCSV(rc *coleta.ResultadoColeta) csv.ResultadoColeta_CSV {
 	coleta.RepositorioColetor = rc.Coleta.RepositorioColetor
 	coleta.VersaoColetor = rc.Coleta.VersaoColetor
 	coleta.DirColetor = rc.Coleta.DirColetor
+
+	var metadados csv.Metadados_CSV
+	metadados.NaoRequerLogin = rc.Metadados.NaoRequerLogin
+	metadados.NaoRequerCaptcha = rc.Metadados.NaoRequerCaptcha
+	metadados.Acesso = csv.Metadados_CSV_FormaDeAcesso(rc.Metadados.Acesso)
+	metadados.Extensao = csv.Metadados_CSV_Extensao(rc.Metadados.Extensao)
+	metadados.EstritamenteTabular = rc.Metadados.EstritamenteTabular
+	metadados.FormatoConsistente = rc.Metadados.FormatoConsistente
+	metadados.TemMatricula = rc.Metadados.TemMatricula
+	metadados.TemLotacao = rc.Metadados.TemLotacao
+	metadados.TemCargo = rc.Metadados.TemCargo
+	metadados.DetalhamentoReceitaBase = csv.Metadados_CSV_OpcoesDetalhamento(rc.Metadados.ReceitaBase)
+	metadados.DetalhamentoOutrasReceitas = csv.Metadados_CSV_OpcoesDetalhamento(rc.Metadados.OutrasReceitas)
+	metadados.DetalhamentoDescontos = csv.Metadados_CSV_OpcoesDetalhamento(rc.Metadados.Despesas)
+
 	for _, v := range rc.Folha.ContraCheque {
 		var contraCheque csv.ContraCheque_CSV
 		contraCheque.IdContraCheque = v.IdContraCheque
@@ -147,7 +169,12 @@ func coletaToCSV(rc *coleta.ResultadoColeta) csv.ResultadoColeta_CSV {
 		folha.ContraCheque = append(folha.ContraCheque, &contraCheque)
 	}
 
-	return csv.ResultadoColeta_CSV{Coleta: &coleta, Remuneracoes: &remuneracoes, Folha: &folha}
+	return csv.ResultadoColeta_CSV{
+		Coleta:       &coleta,
+		Remuneracoes: &remuneracoes,
+		Folha:        &folha,
+		Metadados:    &metadados,
+	}
 }
 
 func buildPacoteCSV(s string) [][]string {
