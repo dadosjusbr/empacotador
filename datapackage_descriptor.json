@@ -289,25 +289,25 @@
                 {
                     "name": "acesso",
                     "title": "Acesso",
-                    "type": "integer",
+                    "type": "string",
                     "description": "Can we build a URL that leads to the data download based on agency/month/year?",
                     "format": "default",
                     "description-ptbr": "Conseguimos prever/construir uma URL com base no órgão/mês/ano que leve ao download do dado?",
                     "constraints": {
                         "required": true,
-                        "enum": [0, 1, 2, 3]
+                        "enum": ["ACESSO_DIRETO", "AMIGAVEL_PARA_RASPAGEM", "RASPAGEM_DIFICULTADA", "NECESSITA_SIMULACAO_USUARIO"]
                     }
                 },
                 {
                     "name": "extensao",
-                    "title": "Categoria",
-                    "type": "integer",
-                    "description": "Extension of the origial data file.",
+                    "title": "Extensão",
+                    "type": "string",
+                    "description": "Extension of the original data file.",
                     "format": "default",
                     "description-ptbr": "Extensao do arquivo de dados, ex: CSV, JSON, XLS, etc",
                     "constraints": {
                         "required": true,
-                        "enum": [0, 1, 2, 3, 4]
+                        "enum": ["PDF", "ODS", "XLS", "JSON", "CSV"]
                     }
                 },
                 {
@@ -368,37 +368,37 @@
                 {
                     "name": "detalhamento_receita_base",
                     "title": "Detalhamento Receita Base",
-                    "type": "integer",
+                    "type": "string",
                     "description": "Detail level of the base remuneration (wage).",
                     "format": "default",
                     "description-ptbr": "Quão detalhado é a publicação da receita base.",
                     "constraints": {
                         "required": true,
-                        "enum": [0, 1, 2]
+                        "enum": ["AUSENCIA", "SUMARIZADO", "DETALHADO"]
                     }
                 },
                 {
                     "name": "detalhamento_outras_receitas",
                     "title": "Detalhamento Outras Despesas",
-                    "type": "integer",
+                    "type": "string",
                     "description": "Detail level of other remunerations.",
                     "format": "default",
                     "description-ptbr": "Quão detalhado é a publicação das demais receitas.",
                     "constraints": {
                         "required": true,
-                        "enum": [0, 1, 2]
+                        "enum": ["AUSENCIA", "SUMARIZADO", "DETALHADO"]
                     }
                 },
                 {
                     "name": "detalhamento_descontos",
                     "title": "Detalhamento Descontos",
-                    "type": "integer",
+                    "type": "string",
                     "description": "Detail level of the base discounts.",
                     "format": "default",
                     "description-ptbr": "Quão detalhado é a publicação dos descontos.",
                     "constraints": {
                         "required": true,
-                        "enum": [0, 1, 2]
+                        "enum": ["AUSENCIA", "SUMARIZADO", "DETALHADO"]
                     }
                 }
               ]

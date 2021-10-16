@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -46,21 +45,8 @@ func main() {
 
 	csvRc := coletaToCSV(er.Rc)
 
-	buildedCSV, err := csvRc.Coleta.MarshalCSV()
-	if err != nil {
-		err = status.NewError(status.InvalidParameters, fmt.Errorf("error creating Coleta CSV sprintf method:%q", err))
-		status.ExitFromError(err)
-	}
 	// Creating coleta csv
-	f, err := os.Create(coletaFileName)
-	if err != nil {
-		log.Fatalln("failed to open file", err)
-	}
-	defer f.Close()
-	w := csvLib.NewWriter(f)
-
-	if err := w.WriteAll(buildPacoteCSV(buildedCSV)); err != nil { // calls Flush internally
-		err = status.NewError(status.SystemError, fmt.Errorf("error writing folha de pagamento CSV:%q", err))
+	if err := recToCSVFile(csvRc.Coleta, coletaFileName); err != nil {
 		status.ExitFromError(err)
 	}
 
@@ -77,8 +63,7 @@ func main() {
 	}
 
 	// Creating metadata csv
-	if err := toCSVFile(csvRc.Metadados, metadadosFileName); err != nil {
-		err = status.NewError(status.InvalidParameters, fmt.Errorf("error creating Metadados CSV:%q", err))
+	if err := recToCSVFile(csvRc.Metadados, metadadosFileName); err != nil {
 		status.ExitFromError(err)
 	}
 
@@ -134,6 +119,7 @@ func coletaToCSV(rc *coleta.ResultadoColeta) csv.ResultadoColeta_CSV {
 	coleta.DirColetor = rc.Coleta.DirColetor
 
 	var metadados csv.Metadados_CSV
+	metadados.ChaveColeta = rc.Coleta.ChaveColeta
 	metadados.NaoRequerLogin = rc.Metadados.NaoRequerLogin
 	metadados.NaoRequerCaptcha = rc.Metadados.NaoRequerCaptcha
 	metadados.Acesso = csv.Metadados_CSV_FormaDeAcesso(rc.Metadados.Acesso)
@@ -183,6 +169,24 @@ func buildPacoteCSV(s string) [][]string {
 	b = append(b, strings.Split(a[0], ","))
 	b = append(b, strings.Split(a[1], ","))
 	return b
+}
+
+func recToCSVFile(t gocsv.TypeMarshaller, path string) error {
+	buildedCSV, err := t.MarshalCSV()
+	if err != nil {
+		return status.NewError(status.InvalidParameters, fmt.Errorf("error marshalling %s:%q", path, err))
+	}
+	// Creating coleta csv
+	f, err := os.Create(path)
+	if err != nil {
+		return status.NewError(status.InvalidParameters, fmt.Errorf("error creating %s:%q", path, err))
+	}
+	defer f.Close()
+	w := csvLib.NewWriter(f)
+	if err := w.WriteAll(buildPacoteCSV(buildedCSV)); err != nil { // calls Flush internally
+		return status.NewError(status.SystemError, fmt.Errorf("error writing %s:%q", path, err))
+	}
+	return nil
 }
 
 // ToCSVFile dumps the payroll into a file using the CSV format.
