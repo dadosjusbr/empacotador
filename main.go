@@ -140,6 +140,7 @@ func coletaToCSV(rc *coleta.ResultadoColeta) csv.ResultadoColeta_CSV {
 		contraCheque.Nome = v.Nome
 		contraCheque.Matricula = v.Matricula
 		contraCheque.Funcao = v.Funcao
+		contraCheque.Ativo = v.Ativo
 		contraCheque.LocalTrabalho = v.LocalTrabalho
 		contraCheque.Tipo = csv.ContraCheque_CSV_Tipo(v.Tipo)
 		for _, k := range v.Remuneracoes.Remuneracao {
