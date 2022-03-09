@@ -34,19 +34,22 @@ type ContraCheque_CSV struct {
 }
 
 type Metadados_CSV struct {
-	ChaveColeta                string `csv:"chave_coleta"`
-	NaoRequerLogin             bool   `csv:"nao_requer_login"`             // É necessário login para coleta dos dados?
-	NaoRequerCaptcha           bool   `csv:"nao_requer_captcha"`           // É necessário captcha para coleta dos dados?
-	Acesso                     string `csv:"acesso"`                       // Conseguimos prever/construir uma URL com base no órgão/mês/ano que leve ao download do dado?
-	Extensao                   string `csv:"extensao"`                     // Extensao do arquivo de dados, ex: CSV, JSON, XLS, etc
-	EstritamenteTabular        bool   `csv:"estritamente_tabular"`         // Órgãos que disponibilizam dados limpos (tidy data)
-	FormatoConsistente         bool   `csv:"formato_consistente"`          // Órgão alterou a forma de expor seus dados entre o mês em questão e o mês anterior?
-	TemMatricula               bool   `csv:"tem_matricula"`                // Órgão disponibiliza matrícula do servidor?
-	TemLotacao                 bool   `csv:"tem_lotacao"`                  // Órgão disponibiliza lotação do servidor?
-	TemCargo                   bool   `csv:"tem_cargo"`                    // Órgão disponibiliza a função do servidor?
-	DetalhamentoReceitaBase    string `csv:"detalhamento_receita_base"`    // Contra-cheque
-	DetalhamentoOutrasReceitas string `csv:"detalhamento_outras_receitas"` // Inclui indenizações, direitos eventuais, diárias, etc
-	DetalhamentoDescontos      string `csv:"detalhamento_descontos"`       // Inclui imposto de renda, retenção por teto e contribuição previdenciária
+	ChaveColeta                string  `csv:"chave_coleta"`
+	NaoRequerLogin             bool    `csv:"nao_requer_login"`             // É necessário login para coleta dos dados?
+	NaoRequerCaptcha           bool    `csv:"nao_requer_captcha"`           // É necessário captcha para coleta dos dados?
+	Acesso                     string  `csv:"acesso"`                       // Conseguimos prever/construir uma URL com base no órgão/mês/ano que leve ao download do dado?
+	Extensao                   string  `csv:"extensao"`                     // Extensao do arquivo de dados, ex: CSV, JSON, XLS, etc
+	EstritamenteTabular        bool    `csv:"estritamente_tabular"`         // Órgãos que disponibilizam dados limpos (tidy data)
+	FormatoConsistente         bool    `csv:"formato_consistente"`          // Órgão alterou a forma de expor seus dados entre o mês em questão e o mês anterior?
+	TemMatricula               bool    `csv:"tem_matricula"`                // Órgão disponibiliza matrícula do servidor?
+	TemLotacao                 bool    `csv:"tem_lotacao"`                  // Órgão disponibiliza lotação do servidor?
+	TemCargo                   bool    `csv:"tem_cargo"`                    // Órgão disponibiliza a função do servidor?
+	DetalhamentoReceitaBase    string  `csv:"detalhamento_receita_base"`    // Contra-cheque
+	DetalhamentoOutrasReceitas string  `csv:"detalhamento_outras_receitas"` // Inclui indenizações, direitos eventuais, diárias, etc
+	DetalhamentoDescontos      string  `csv:"detalhamento_descontos"`       // Inclui imposto de renda, retenção por teto e contribuição previdenciária
+	IndiceCompletude           float32 `csv:"indice_completude"`            // Componente do índice de transparência resultante da análise dos metadados relacionados a disponibilidade dos dados.
+	IndiceFacilidade           float32 `csv:"indice_facilidade"`            // Componente do índice de transparência resultante da análise dos metadados relacionados a dificuldade para acessar os dados que estão disponíveis.
+	IndiceTransparencia        float32 `csv:"indice_transparencia"`         // Nota final, calculada utilizada os componentes de disponibilidade e dificuldade.
 }
 
 type Remuneracao_CSV struct {
