@@ -400,6 +400,30 @@
                         "required": true,
                         "enum": ["AUSENCIA", "SUMARIZADO", "DETALHADO"]
                     }
+                },
+                {
+                    "name": "indice_completude",
+                    "title": "Componente completude do índice de transparência DadosJusBR",
+                    "type": "number",
+                    "description": "DadosJusBR Transparency Index Component which results from metadata related to data availability.",
+                    "format": "default",
+                    "description-ptbr": "Componente do índice de transparência resultante da análise dos metadados relacionados a disponibilidade dos dados."
+                },
+                {
+                    "name": "indice_facilidade",
+                    "title": "Componente facilidade do índice de transparência DadosJusBR",
+                    "type": "number",
+                    "description": "DadosJusBR Transparency Index Component which results from metadata related to how easy is to access the data.",
+                    "format": "default",
+                    "description-ptbr": "Componente do índice de transparência resultante da análise dos metadados relacionados a dificuldade para acessar os dados que estão disponíveis."
+                },
+                {
+                    "name": "indice_transparencia",
+                    "title": "Índice de Transparência DadosJusBR",
+                    "type": "number",
+                    "description": "DadosJusBR Transparency Score, calculated from the availability and access components.",
+                    "format": "default",
+                    "description-ptbr": "Nota final, calculada utilizada os componentes de disponibilidade e dificuldade."
                 }
               ]
         }

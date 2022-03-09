@@ -129,6 +129,9 @@ func coletaToCSV(rc *coleta.ResultadoColeta) *ResultadoColeta_CSV {
 	metadados.DetalhamentoReceitaBase = rc.Metadados.ReceitaBase.String()
 	metadados.DetalhamentoOutrasReceitas = rc.Metadados.OutrasReceitas.String()
 	metadados.DetalhamentoDescontos = rc.Metadados.Despesas.String()
+	metadados.IndiceCompletude = rc.Metadados.IndiceCompletude
+	metadados.IndiceFacilidade = rc.Metadados.IndiceFacilidade
+	metadados.IndiceTransparencia = rc.Metadados.IndiceTransparencia
 
 	for _, v := range rc.Folha.ContraCheque {
 		var contraCheque ContraCheque_CSV
