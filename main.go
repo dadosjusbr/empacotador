@@ -32,8 +32,7 @@ func main() {
 	csvRc := datapackage.NewResultadoColetaCSV(er.Rc)
 
 	zipName := filepath.Join(outputPath, fmt.Sprintf("%s-%d-%d.zip", er.Rc.Coleta.Orgao, er.Rc.Coleta.Ano, er.Rc.Coleta.Mes))
-
-	if err := datapackage.Zip(outputPath, csvRc, true); err != nil {
+	if err := datapackage.Zip(zipName, csvRc, true); err != nil {
 		err = status.NewError(status.SystemError, fmt.Errorf("error zipping datapackage (%s):%q", zipName, err))
 		status.ExitFromError(err)
 	}
