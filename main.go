@@ -13,14 +13,6 @@ import (
 	"google.golang.org/protobuf/encoding/prototext"
 )
 
-const (
-	coletaFileName      = "coleta.csv"                  // hardcoded in datapackage_descriptor.json
-	folhaFileName       = "contra_cheque.csv"           // hardcoded in datapackage_descriptor.json
-	remuneracaoFileName = "remuneracao.csv"             // hardcoded in datapackage_descriptor.json
-	metadadosFileName   = "metadados.csv"               // hardcoded in datapackage_descriptor.json
-	packageFileName     = "datapackage_descriptor.json" // name of datapackage descriptor
-)
-
 func main() {
 	outputPath := os.Getenv("OUTPUT_FOLDER")
 	if outputPath == "" {
@@ -41,7 +33,7 @@ func main() {
 
 	zipName := filepath.Join(outputPath, fmt.Sprintf("%s-%d-%d.zip", er.Rc.Coleta.Orgao, er.Rc.Coleta.Ano, er.Rc.Coleta.Mes))
 
-	if err := datapackage.Zip(outputPath, packageFileName, csvRc, true); err != nil {
+	if err := datapackage.Zip(outputPath, csvRc, true); err != nil {
 		err = status.NewError(status.SystemError, fmt.Errorf("error zipping datapackage (%s):%q", zipName, err))
 		status.ExitFromError(err)
 	}
