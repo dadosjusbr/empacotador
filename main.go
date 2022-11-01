@@ -32,13 +32,14 @@ func main() {
 		status.ExitFromError(status.NewError(5, fmt.Errorf("error unmarshaling crawling resul from STDIN: %q\n\n %s ", err, string(erIN))))
 	}
 
+	var resultadoEmpacotamento pipeline.ResultadoEmpacotamento
 	csvRc := datapackage.NewResultadoColetaCSV(er.Rc)
-
 	zipName := filepath.Join(outputPath, fmt.Sprintf("%s-%d-%d.zip", er.Rc.Coleta.Orgao, er.Rc.Coleta.Ano, er.Rc.Coleta.Mes))
 	if err := datapackage.Zip(zipName, csvRc, true); err != nil {
 		err = status.NewError(status.SystemError, fmt.Errorf("error zipping datapackage (%s):%q", zipName, err))
 		status.ExitFromError(err)
 	}
+	resultadoEmpacotamento.Pacote = zipName
 
 	if len(er.Rc.Coleta.Arquivos) > 0 {
 		bkpZip := filepath.Join(outputPath, fmt.Sprintf("backup-%s-%d-%d.zip", er.Rc.Coleta.Orgao, er.Rc.Coleta.Ano, er.Rc.Coleta.Mes))
@@ -47,12 +48,12 @@ func main() {
 			err = status.NewError(status.SystemError, fmt.Errorf("error zipping backup files (%s):%q", bkpZip, err))
 			status.ExitFromError(err)
 		}
-		er.Rc.Coleta.Arquivos = append(er.Rc.Coleta.Arquivos, bkpZip)
+		resultadoEmpacotamento.Backup = bkpZip
 	}
+	
 	// Sending results.
-	er.Pr = &pipeline.ResultadoEmpacotamento{
-		Pacote: zipName,
-	}
+	er.Pr = &resultadoEmpacotamento
+
 	b, err := prototext.Marshal(&er)
 	if err != nil {
 		err = status.NewError(status.Unknown, fmt.Errorf("error marshalling packaging result (%s):%q", zipName, err))
