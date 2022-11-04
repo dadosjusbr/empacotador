@@ -1,10 +1,13 @@
 package main
 
 import (
+	"archive/zip"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/datapackage"
@@ -30,11 +33,26 @@ func main() {
 	}
 
 	csvRc := datapackage.NewResultadoColetaCSV(er.Rc)
-
 	zipName := filepath.Join(outputPath, fmt.Sprintf("%s-%d-%d.zip", er.Rc.Coleta.Orgao, er.Rc.Coleta.Ano, er.Rc.Coleta.Mes))
 	if err := datapackage.Zip(zipName, csvRc, true); err != nil {
 		err = status.NewError(status.SystemError, fmt.Errorf("error zipping datapackage (%s):%q", zipName, err))
 		status.ExitFromError(err)
+	}
+
+	if len(er.Rc.Coleta.Arquivos) > 0 {
+		bkpZip := filepath.Join(outputPath, fmt.Sprintf("backup-%s-%d-%d.zip", er.Rc.Coleta.Orgao, er.Rc.Coleta.Ano, er.Rc.Coleta.Mes))
+		err := zipFiles(bkpZip, outputPath, er.Rc.Coleta.Arquivos)
+		if err != nil {
+			err = status.NewError(status.SystemError, fmt.Errorf("error zipping backup files (%s):%q", bkpZip, err))
+			status.ExitFromError(err)
+		}
+		for _, f := range er.Rc.Coleta.Arquivos {
+			if err := os.Remove(f); err != nil {
+				err = status.NewError(status.SystemError, fmt.Errorf("error removing backup file (%s):%q", f, err))
+				status.ExitFromError(err)
+			}
+		}
+		er.Rc.Coleta.Arquivos = []string{bkpZip}
 	}
 	// Sending results.
 	er.Pr = &pipeline.ResultadoEmpacotamento{
@@ -47,3 +65,45 @@ func main() {
 	}
 	fmt.Printf("%s", b)
 }
+
+func zipFiles(filename string, basePath string, files []string) error {
+	newfile, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer newfile.Close()
+	zipWriter := zip.NewWriter(newfile)
+	defer zipWriter.Close()
+	for _, file := range files {
+		zipfile, err := os.Open(file)
+		if err != nil {
+			return err
+		}
+		defer zipfile.Close()
+		info, err := zipfile.Stat()
+		if err != nil {
+			return err
+		}
+		header, err := zip.FileInfoHeader(info)
+		if err != nil {
+			return err
+		}
+		
+		// Deflate is the compression method.
+		header.Method = zip.Deflate
+		t := strings.TrimPrefix(strings.TrimPrefix(file, basePath), "/")
+		if filepath.Dir(t) != "." {
+			header.Name = t
+		}
+		writer, err := zipWriter.CreateHeader(header)
+		if err != nil {
+			return err
+		}
+		_, err = io.Copy(writer, zipfile)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
