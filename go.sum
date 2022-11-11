@@ -5,8 +5,12 @@ github.com/dadosjusbr/datapackage v0.0.0-20220407133248-f032e7adfc33 h1:y5E5fZ4X
 github.com/dadosjusbr/datapackage v0.0.0-20220407133248-f032e7adfc33/go.mod h1:+WRg2FEFtE8A09VeJnbodm23EDOCuXsLontCAwejpqc=
 github.com/dadosjusbr/datapackage v0.0.0-20221101144952-610ed98d8bc2 h1:onC9fSYuDMjCWXBMfZKkuR016CUoF6JuE333ClXMk+o=
 github.com/dadosjusbr/datapackage v0.0.0-20221101144952-610ed98d8bc2/go.mod h1:TXaoORoBjqfP1HGcx/f8MJ92WtvUzYNP/C9o3wv3tfw=
+github.com/dadosjusbr/datapackage v0.0.0-20221111184141-77a33346e496 h1:tcbqvmYwd29TaCAehEhMGjNEpTzxK8KE06Pl969HdwQ=
+github.com/dadosjusbr/datapackage v0.0.0-20221111184141-77a33346e496/go.mod h1:Z5V2HDEwjaBq72+1Cb7pP2sqSuVh4tfEkqHEaKtxMqs=
 github.com/dadosjusbr/proto v0.0.0-20220304160723-47e93e9d97b5 h1:T1vX+7BhXkkYRZnRdla0Z8Uu9Emww7x2jNbowmbtOwM=
 github.com/dadosjusbr/proto v0.0.0-20220304160723-47e93e9d97b5/go.mod h1:a04KL3nn5wvlJTuoTYggaeokQi3njDyt9L7Ss9EQEJQ=
+github.com/dadosjusbr/proto v0.0.0-20221111143805-a41e9c57346c h1:AC8emyvDGDWay68+wvRilvHpm2//8LcOR3nFjGA5xEk=
+github.com/dadosjusbr/proto v0.0.0-20221111143805-a41e9c57346c/go.mod h1:gPA7VxjEmyez/xtln4qBj+tM1NO0/zcw3ryjxTRNSco=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/frictionlessdata/datapackage-go v1.0.2 h1:RpPtBEz30fMLccVwSrQRWMWtLhE1O2OIGvgz4/jMxOc=
 github.com/frictionlessdata/datapackage-go v1.0.2/go.mod h1:bqt5SzFjnpsZNw4kXO4CFIwH9vV5LhEdQikftJ0uJ5M=
@@ -19,6 +23,7 @@ github.com/gocarina/gocsv v0.0.0-20220310154401-d4df709ca055 h1:UfcDMw41lSx3XM7U
 github.com/gocarina/gocsv v0.0.0-20220310154401-d4df709ca055/go.mod h1:5YoVOkjYAQumqlV356Hj3xeYh4BdZuLE0/nRkf2NKkI=
 github.com/gocarina/gocsv v0.0.0-20220927221512-ad3251f9fa25 h1:wxgEEZvsnOTrDO2npSSKUMDx5IykfoGmro+/Vjc1BQ8=
 github.com/gocarina/gocsv v0.0.0-20220927221512-ad3251f9fa25/go.mod h1:5YoVOkjYAQumqlV356Hj3xeYh4BdZuLE0/nRkf2NKkI=
+github.com/golang/protobuf v1.5.0 h1:LUVKkCeviFUMKqHa4tXIIij/lbhnMbP7Fn5wKdKkRh4=
 github.com/golang/protobuf v1.5.0/go.mod h1:FsONVRAS9T7sI+LIUmWTfcYkHO4aIWwzhcaSAoJOfIk=
 github.com/google/go-cmp v0.5.5 h1:Khx7svrCpmxxtHBq5j2mp/xVjsi8hQMfNLvJFAlrGgU=
 github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
