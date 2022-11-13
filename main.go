@@ -119,6 +119,7 @@ func main() {
 
 	// Sending results.
 	er.Pr = &pipeline.ResultadoEmpacotamento{
+		Remuneracoes: remunerationsZip,
 		Pacote: zipName,
 	}
 	b, err := prototext.Marshal(&er)
