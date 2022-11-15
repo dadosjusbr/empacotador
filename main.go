@@ -64,15 +64,17 @@ func main() {
 	var remunerations []Remuneracao
 	for _, c := range er.Rc.Folha.ContraCheque {
 		for _, r := range c.Remuneracoes.Remuneracao{
+			// Erroneamente, nem todos os descontos estão vindo com valor negativo. Por isso, multiplicamos por -1.
 			if r.Natureza == 1 && r.Valor > 0 {
 				r.Valor *= -1
 			}
-
+			/*Esses são os diferentes nomes que os órgãos dão para a remuneração base(se ignorarmos caracteres especiais);*/
 			categories := []string{"subsidio", "cargo efetivo", "remuneracao basica", "remuneracao do cargo efetivo"}
 			t := transform.Chain(norm.NFD,
 				runes.Remove(runes.In(unicode.Mn)),
 				norm.NFC,
 				runes.Map(unicode.ToLower))
+			// Ignorando os caracteres especiais da categoria
 			result, _, _ := transform.String(t, strings.TrimSpace(r.Item))
 			var category string
 
