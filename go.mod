@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/dadosjusbr/coletores v0.0.0-20210928113650-4c03e4fa3b74
 	github.com/dadosjusbr/datapackage v0.0.0-20221111184141-77a33346e496
-	github.com/dadosjusbr/proto v0.0.0-20221111143805-a41e9c57346c
+	github.com/dadosjusbr/proto v0.0.0-20221129132150-665052871cc7
 	golang.org/x/text v0.4.0
 	google.golang.org/protobuf v1.28.1
 )
