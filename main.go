@@ -62,6 +62,7 @@ func main() {
 	}
 
 	var remunerations []Remuneracao
+	var descontos, base, outras int
 	for _, c := range er.Rc.Folha.ContraCheque {
 		for _, r := range c.Remuneracoes.Remuneracao{
 			// Erroneamente, nem todos os descontos estão vindo com valor negativo. Por isso, multiplicamos por -1.
@@ -81,10 +82,13 @@ func main() {
 			// Definindo a categoria do contracheque
 			if slices.Contains(categories, result) {
 				category = "base"
+				base ++
 			} else if r.Valor > 0 || (r.Valor == 0 && r.Natureza == 0) {
 				category = "outras"
+				outras ++
 			} else if r.Valor < 0 || (r.Valor == 0 && r.Natureza == 1) {
 				category = "descontos"
+				descontos ++
 			}
 
 			remunerations = append(remunerations, Remuneracao{
@@ -118,10 +122,14 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error removing remunerations file: %q", err)
 	}
-
 	// Sending results.
 	er.Pr = &pipeline.ResultadoEmpacotamento{
-		Remuneracoes: remunerationsZip,
+		Remuneracoes: &pipeline.RemuneracoesZip{
+			ZipUrl: remunerationsZip,
+			NumDescontos: int32(descontos),
+			NumBase: int32(base),
+			NumOutras: int32(outras),
+		},
 		Pacote: zipName,
 	}
 	b, err := prototext.Marshal(&er)
