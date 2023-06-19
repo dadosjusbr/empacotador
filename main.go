@@ -9,16 +9,11 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"unicode"
 
 	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/datapackage"
 	"github.com/dadosjusbr/proto/coleta"
 	"github.com/dadosjusbr/proto/pipeline"
-	"golang.org/x/exp/slices"
-	"golang.org/x/text/runes"
-	"golang.org/x/text/transform"
-	"golang.org/x/text/unicode/norm"
 	"google.golang.org/protobuf/encoding/prototext"
 )
 
@@ -64,54 +59,46 @@ func main() {
 	var remunerations []Remuneracao
 	var numDescontos, numBase, numOutras int
 	for _, c := range er.Rc.Folha.ContraCheque {
-		for _, r := range c.Remuneracoes.Remuneracao{
+		for _, r := range c.Remuneracoes.Remuneracao {
 			// Erroneamente, nem todos os descontos estão vindo com valor negativo. Por isso, multiplicamos por -1.
-			if r.Natureza == 1 && r.Valor > 0 {
+			if r.Natureza == coleta.Remuneracao_D && r.Valor > 0 {
 				r.Valor *= -1
 			}
-			/*Esses são os diferentes nomes que os órgãos dão para a remuneração base(se ignorarmos caracteres especiais);*/
-			categories := []string{"subsidio", "cargo efetivo", "remuneracao basica", "remuneracao do cargo efetivo"}
-			t := transform.Chain(norm.NFD,
-				runes.Remove(runes.In(unicode.Mn)),
-				norm.NFC,
-				runes.Map(unicode.ToLower))
-			// Ignorando os caracteres especiais da categoria
-			result, _, _ := transform.String(t, strings.TrimSpace(r.Item))
 			var category string
 
 			// Definindo a categoria do contracheque
-			if slices.Contains(categories, result) {
+			if r.Natureza == coleta.Remuneracao_R && r.TipoReceita == coleta.Remuneracao_B {
 				category = "base"
-				numBase ++
-			} else if r.Valor > 0 || (r.Valor == 0 && r.Natureza == 0) {
+				numBase++
+			} else if r.Natureza == coleta.Remuneracao_R && r.TipoReceita == coleta.Remuneracao_O {
 				category = "outras"
-				numOutras ++
-			} else if r.Valor < 0 || (r.Valor == 0 && r.Natureza == 1) {
+				numOutras++
+			} else if r.Natureza == coleta.Remuneracao_D {
 				category = "descontos"
-				numDescontos ++
+				numDescontos++
 			}
 
 			remunerations = append(remunerations, Remuneracao{
-				Ano: er.Rc.Coleta.Ano,
-				Mes: er.Rc.Coleta.Mes,
-				Orgao: er.Rc.Coleta.Orgao,
-				Nome: c.Nome,
-				Matricula: c.Matricula,
-				Cargo: c.Funcao,
-				Lotacao: c.LocalTrabalho,
-				Valor: r.Valor,
+				Ano:                      er.Rc.Coleta.Ano,
+				Mes:                      er.Rc.Coleta.Mes,
+				Orgao:                    er.Rc.Coleta.Orgao,
+				Nome:                     c.Nome,
+				Matricula:                c.Matricula,
+				Cargo:                    c.Funcao,
+				Lotacao:                  c.LocalTrabalho,
+				Valor:                    r.Valor,
 				DetalhamentoContracheque: r.Item,
-				CategoriaContracheque: category,
+				CategoriaContracheque:    category,
 			})
 		}
 	}
-	
-	remunerationsFile := filepath.Join(outputPath,"remuneracoes.csv")
+
+	remunerationsFile := filepath.Join(outputPath, "remuneracoes.csv")
 	if err = toCSVFile(&remunerations, remunerationsFile); err != nil {
 		log.Fatalf("Error dumps remuneration into file (%s) : %v", remunerationsFile, err)
 	}
 
-	remunerationsZip := filepath.Join(outputPath, fmt.Sprintf("remuneracoes-%s-%d-%d.zip",  er.Rc.Coleta.Orgao, er.Rc.Coleta.Ano, er.Rc.Coleta.Mes))
+	remunerationsZip := filepath.Join(outputPath, fmt.Sprintf("remuneracoes-%s-%d-%d.zip", er.Rc.Coleta.Orgao, er.Rc.Coleta.Ano, er.Rc.Coleta.Mes))
 	err = zipFiles(remunerationsZip, outputPath, []string{remunerationsFile})
 	if err != nil {
 		log.Fatalf("Error zipping remunerations file: %q", err)
@@ -125,10 +112,10 @@ func main() {
 	// Sending results.
 	er.Pr = &pipeline.ResultadoEmpacotamento{
 		Remuneracoes: &pipeline.RemuneracoesZip{
-			ZipUrl: remunerationsZip,
+			ZipUrl:       remunerationsZip,
 			NumDescontos: int32(numDescontos),
-			NumBase: int32(numBase),
-			NumOutras: int32(numOutras),
+			NumBase:      int32(numBase),
+			NumOutras:    int32(numOutras),
 		},
 		Pacote: zipName,
 	}
@@ -162,7 +149,7 @@ func zipFiles(filename string, basePath string, files []string) error {
 		if err != nil {
 			return err
 		}
-		
+
 		// Deflate is the compression method.
 		header.Method = zip.Deflate
 		t := strings.TrimPrefix(strings.TrimPrefix(file, basePath), "/")
@@ -180,4 +167,3 @@ func zipFiles(filename string, basePath string, files []string) error {
 	}
 	return nil
 }
-
