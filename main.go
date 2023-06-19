@@ -9,11 +9,16 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"unicode"
 
 	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/datapackage"
 	"github.com/dadosjusbr/proto/coleta"
 	"github.com/dadosjusbr/proto/pipeline"
+	"golang.org/x/exp/slices"
+	"golang.org/x/text/runes"
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 	"google.golang.org/protobuf/encoding/prototext"
 )
 
@@ -64,10 +69,18 @@ func main() {
 			if r.Natureza == coleta.Remuneracao_D && r.Valor > 0 {
 				r.Valor *= -1
 			}
+			/*Esses são os diferentes nomes que os órgãos dão para a remuneração base(se ignorarmos caracteres especiais);*/
+			categories := []string{"subsidio", "cargo efetivo", "remuneracao basica", "remuneracao do cargo efetivo"}
+			t := transform.Chain(norm.NFD,
+				runes.Remove(runes.In(unicode.Mn)),
+				norm.NFC,
+				runes.Map(unicode.ToLower))
+			// Ignorando os caracteres especiais da categoria
+			result, _, _ := transform.String(t, strings.TrimSpace(r.Item))
 			var category string
 
 			// Definindo a categoria do contracheque
-			if r.Natureza == coleta.Remuneracao_R && r.TipoReceita == coleta.Remuneracao_B {
+			if r.Natureza == coleta.Remuneracao_R && r.TipoReceita == coleta.Remuneracao_B || slices.Contains(categories, result) {
 				category = "base"
 				numBase++
 			} else if r.Natureza == coleta.Remuneracao_R && r.TipoReceita == coleta.Remuneracao_O {
