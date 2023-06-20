@@ -8,9 +8,7 @@ name: release and test
 on:
   #schedule:
   #  - cron: '22 13 * * *'
-  push:
-    # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+  push
   #pull_request:
   #  branches: [ main ]
 
