@@ -21,7 +21,7 @@ env:
 
 jobs:
   build-push-image:
-    if: ${{ github.ref_name }} == 'main'
+    if: github.ref_name.main
     runs-on: ubuntu-latest
     permissions:
       contents: read
