@@ -11,10 +11,10 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/dadosjusbr/coletores/status"
 	"github.com/dadosjusbr/datapackage"
 	"github.com/dadosjusbr/proto/coleta"
 	"github.com/dadosjusbr/proto/pipeline"
+	"github.com/dadosjusbr/status"
 	"golang.org/x/exp/slices"
 	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
@@ -61,50 +61,7 @@ func main() {
 		er.Rc.Coleta.Arquivos = []string{bkpZip}
 	}
 
-	var remunerations []Remuneracao
-	var numDescontos, numBase, numOutras int
-	for _, c := range er.Rc.Folha.ContraCheque {
-		for _, r := range c.Remuneracoes.Remuneracao {
-			// Erroneamente, nem todos os descontos estão vindo com valor negativo. Por isso, multiplicamos por -1.
-			if r.Natureza == coleta.Remuneracao_D && r.Valor > 0 {
-				r.Valor *= -1
-			}
-			/*Esses são os diferentes nomes que os órgãos dão para a remuneração base(se ignorarmos caracteres especiais);*/
-			categories := []string{"subsidio", "cargo efetivo", "remuneracao basica", "remuneracao do cargo efetivo"}
-			t := transform.Chain(norm.NFD,
-				runes.Remove(runes.In(unicode.Mn)),
-				norm.NFC,
-				runes.Map(unicode.ToLower))
-			// Ignorando os caracteres especiais da categoria
-			result, _, _ := transform.String(t, strings.TrimSpace(r.Item))
-			var category string
-
-			// Definindo a categoria do contracheque
-			if r.Natureza == coleta.Remuneracao_R && r.TipoReceita == coleta.Remuneracao_B || slices.Contains(categories, result) {
-				category = "base"
-				numBase++
-			} else if r.Natureza == coleta.Remuneracao_R && r.TipoReceita == coleta.Remuneracao_O {
-				category = "outras"
-				numOutras++
-			} else if r.Natureza == coleta.Remuneracao_D {
-				category = "descontos"
-				numDescontos++
-			}
-
-			remunerations = append(remunerations, Remuneracao{
-				Ano:                      er.Rc.Coleta.Ano,
-				Mes:                      er.Rc.Coleta.Mes,
-				Orgao:                    er.Rc.Coleta.Orgao,
-				Nome:                     c.Nome,
-				Matricula:                c.Matricula,
-				Cargo:                    c.Funcao,
-				Lotacao:                  c.LocalTrabalho,
-				Valor:                    r.Valor,
-				DetalhamentoContracheque: r.Item,
-				CategoriaContracheque:    category,
-			})
-		}
-	}
+	remunerations, countCategories := categorizeRemunerations(er.Rc)
 
 	remunerationsFile := filepath.Join(outputPath, "remuneracoes.csv")
 	if err = toCSVFile(&remunerations, remunerationsFile); err != nil {
@@ -126,12 +83,13 @@ func main() {
 	er.Pr = &pipeline.ResultadoEmpacotamento{
 		Remuneracoes: &pipeline.RemuneracoesZip{
 			ZipUrl:       remunerationsZip,
-			NumDescontos: int32(numDescontos),
-			NumBase:      int32(numBase),
-			NumOutras:    int32(numOutras),
+			NumDescontos: int32(countCategories["descontos"]),
+			NumBase:      int32(countCategories["base"]),
+			NumOutras:    int32(countCategories["outras"]),
 		},
 		Pacote: zipName,
 	}
+
 	b, err := prototext.Marshal(&er)
 	if err != nil {
 		err = status.NewError(status.Unknown, fmt.Errorf("error marshalling packaging result (%s):%q", zipName, err))
@@ -179,4 +137,51 @@ func zipFiles(filename string, basePath string, files []string) error {
 		}
 	}
 	return nil
+}
+
+func categorizeRemunerations(rc *coleta.ResultadoColeta) ([]Remuneracao, map[string]int) {
+	var remunerations []Remuneracao
+	cat := make(map[string]int)
+
+	for _, c := range rc.Folha.ContraCheque {
+		for _, r := range c.Remuneracoes.Remuneracao {
+			// Erroneamente, nem todos os descontos estão vindo com valor negativo. Por isso, multiplicamos por -1.
+			if r.Natureza == coleta.Remuneracao_D && r.Valor > 0 {
+				r.Valor *= -1
+			}
+			/*Esses são os diferentes nomes que os órgãos dão para a remuneração base(se ignorarmos caracteres especiais);*/
+			categories := []string{"subsidio", "cargo efetivo", "remuneracao basica", "remuneracao do cargo efetivo"}
+			t := transform.Chain(norm.NFD,
+				runes.Remove(runes.In(unicode.Mn)),
+				norm.NFC,
+				runes.Map(unicode.ToLower))
+			// Ignorando os caracteres especiais da categoria
+			result, _, _ := transform.String(t, strings.TrimSpace(r.Item))
+
+			var category string
+
+			// Definindo a categoria do contracheque
+			if r.Natureza == coleta.Remuneracao_R && r.TipoReceita == coleta.Remuneracao_B || slices.Contains(categories, result) {
+				category = "base"
+			} else if r.Natureza == coleta.Remuneracao_R && r.TipoReceita == coleta.Remuneracao_O {
+				category = "outras"
+			} else if r.Natureza == coleta.Remuneracao_D {
+				category = "descontos"
+			}
+			remunerations = append(remunerations, Remuneracao{
+				Ano:                      rc.Coleta.Ano,
+				Mes:                      rc.Coleta.Mes,
+				Orgao:                    rc.Coleta.Orgao,
+				Nome:                     c.Nome,
+				Matricula:                c.Matricula,
+				Cargo:                    c.Funcao,
+				Lotacao:                  c.LocalTrabalho,
+				Valor:                    r.Valor,
+				DetalhamentoContracheque: r.Item,
+				CategoriaContracheque:    category,
+			})
+			cat[category]++
+		}
+	}
+	return remunerations, cat
 }
