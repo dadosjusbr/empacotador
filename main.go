@@ -83,9 +83,9 @@ func main() {
 	er.Pr = &pipeline.ResultadoEmpacotamento{
 		Remuneracoes: &pipeline.RemuneracoesZip{
 			ZipUrl:       remunerationsZip,
-			NumDescontos: int32(countCategories["descontos"]),
-			NumBase:      int32(countCategories["base"]),
-			NumOutras:    int32(countCategories["outras"]),
+			NumDescontos: countCategories.Descontos,
+			NumBase:      countCategories.Base,
+			NumOutras:    countCategories.Outras,
 		},
 		Pacote: zipName,
 	}
@@ -139,9 +139,9 @@ func zipFiles(filename string, basePath string, files []string) error {
 	return nil
 }
 
-func categorizeRemunerations(rc *coleta.ResultadoColeta) ([]Remuneracao, map[string]int) {
+func categorizeRemunerations(rc *coleta.ResultadoColeta) ([]Remuneracao, Categoria) {
 	var remunerations []Remuneracao
-	cat := make(map[string]int)
+	var cat Categoria
 
 	for _, c := range rc.Folha.ContraCheque {
 		for _, r := range c.Remuneracoes.Remuneracao {
@@ -161,12 +161,15 @@ func categorizeRemunerations(rc *coleta.ResultadoColeta) ([]Remuneracao, map[str
 			var category string
 
 			// Definindo a categoria do contracheque
-			if r.Natureza == coleta.Remuneracao_R && r.TipoReceita == coleta.Remuneracao_B || slices.Contains(categories, result) {
-				category = "base"
-			} else if r.Natureza == coleta.Remuneracao_R && r.TipoReceita == coleta.Remuneracao_O {
-				category = "outras"
-			} else if r.Natureza == coleta.Remuneracao_D {
+			if r.Natureza == coleta.Remuneracao_D {
 				category = "descontos"
+				cat.Descontos++
+			} else if r.TipoReceita == coleta.Remuneracao_B || slices.Contains(categories, result) {
+				category = "base"
+				cat.Base++
+			} else {
+				category = "outras"
+				cat.Outras++
 			}
 			remunerations = append(remunerations, Remuneracao{
 				Ano:                      rc.Coleta.Ano,
@@ -180,7 +183,6 @@ func categorizeRemunerations(rc *coleta.ResultadoColeta) ([]Remuneracao, map[str
 				DetalhamentoContracheque: r.Item,
 				CategoriaContracheque:    category,
 			})
-			cat[category]++
 		}
 	}
 	return remunerations, cat

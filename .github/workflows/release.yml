@@ -20,8 +20,20 @@ env:
 
 
 jobs:
+  tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Running tests
+        run: go test ./
+
   build-push-image:
     if: github.ref_name.main
+    needs: tests
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -58,14 +70,3 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-  
-  tests:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Running tests
-        run: go test ./

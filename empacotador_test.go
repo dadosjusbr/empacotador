@@ -1,45 +1,64 @@
 package main
 
 import (
-	"encoding/csv"
-	"io/ioutil"
-	"os"
 	"testing"
 
 	"github.com/dadosjusbr/proto/coleta"
-	"github.com/dadosjusbr/proto/pipeline"
 	"github.com/stretchr/testify/assert"
-	"google.golang.org/protobuf/encoding/prototext"
 )
 
 func TestCategorizeRemunerations(t *testing.T) {
-	var er pipeline.ResultadoExecucao
-	er.Rc = new(coleta.ResultadoColeta)
-
-	erIN, _ := ioutil.ReadFile("entrada_test.txt")
-	if err := prototext.Unmarshal(erIN, er.Rc); err != nil {
-		t.Fatalf("error unmarshaling crawling resul from STDIN: %q\n\n %s ", err, string(erIN))
+	rc := new(coleta.ResultadoColeta)
+	rc.Coleta = &coleta.Coleta{
+		Orgao: "teste",
+		Mes:   1,
+		Ano:   2018,
+	}
+	rc.Folha = new(coleta.FolhaDePagamento)
+	rc.Folha.ContraCheque = []*coleta.ContraCheque{
+		&coleta.ContraCheque{
+			Nome:      "",
+			Matricula: "",
+			Funcao:    "",
+			Remuneracoes: &coleta.Remuneracoes{
+				Remuneracao: []*coleta.Remuneracao{
+					&coleta.Remuneracao{
+						Natureza:    coleta.Remuneracao_R,
+						TipoReceita: coleta.Remuneracao_B,
+						Categoria:   "Contracheque",
+						Item:        "Vencimentos / Subsídios",
+						Valor:       39293.32,
+					},
+					&coleta.Remuneracao{
+						Categoria: "Contracheque",
+						Item:      "Subsídio",
+						Valor:     33689.11,
+					},
+					&coleta.Remuneracao{
+						Natureza:    coleta.Remuneracao_R,
+						TipoReceita: coleta.Remuneracao_O,
+						Categoria:   "Contracheque",
+						Item:        "Férias",
+						Valor:       13097.77,
+					},
+					&coleta.Remuneracao{
+						Natureza:  coleta.Remuneracao_D,
+						Categoria: "Contracheque",
+						Item:      "Retenção por Teto Constitucional",
+						Valor:     1507.93,
+					},
+				},
+			},
+		},
 	}
 
-	remunerations, countCategories := categorizeRemunerations(er.Rc)
+	remunerations, countCategories := categorizeRemunerations(rc)
 
-	remunerationFile, err := os.Open("remuneracoes_test.csv")
-	if err != nil {
-		t.Fatalf("error reading remunerations.csv: %q", err)
-	}
-	defer remunerationFile.Close()
-
-	remuneration, err := csv.NewReader(remunerationFile).ReadAll()
-	if err != nil {
-		t.Fatalf("error reading remunerationFile: %q", err)
-	}
-
-	for i, r := range remuneration {
-		assert.Equal(t, remunerations[i].DetalhamentoContracheque, r[7])
-		assert.Equal(t, remunerations[i].CategoriaContracheque, r[8])
-	}
-
-	assert.Equal(t, countCategories["base"], 55)
-	assert.Equal(t, countCategories["descontos"], 44)
-	assert.Equal(t, countCategories["outras"], 66)
+	assert.Equal(t, remunerations[0].CategoriaContracheque, "base")
+	assert.Equal(t, remunerations[1].CategoriaContracheque, "base")
+	assert.Equal(t, remunerations[2].CategoriaContracheque, "outras")
+	assert.Equal(t, remunerations[3].CategoriaContracheque, "descontos")
+	assert.Equal(t, countCategories.Base, int32(2))
+	assert.Equal(t, countCategories.Descontos, int32(1))
+	assert.Equal(t, countCategories.Outras, int32(1))
 }
