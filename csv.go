@@ -20,6 +20,12 @@ type Remuneracao struct {
 	Valor                    float64 `csv:"valor" tableheader:"valor"`
 }
 
+type Categoria struct {
+	Base      int32
+	Outras    int32
+	Descontos int32
+}
+
 func toCSVFile(in interface{}, path string) error {
 	f, err := os.Create(path)
 	if err != nil {

@@ -1,4 +1,4 @@
-name: release
+name: release and test
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -8,10 +8,7 @@ name: release
 on:
   #schedule:
   #  - cron: '22 13 * * *'
-  push:
-    branches: [ main ]
-    # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+  push
   #pull_request:
   #  branches: [ main ]
 
@@ -23,7 +20,20 @@ env:
 
 
 jobs:
+  tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Running tests
+        run: go test ./
+
   build-push-image:
+    if: github.ref_name.main
+    needs: tests
     runs-on: ubuntu-latest
     permissions:
       contents: read
