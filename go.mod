@@ -3,7 +3,6 @@ module empacotador
 go 1.18
 
 require (
-	github.com/dadosjusbr/datapackage v0.0.0-20221212104130-d1a981103f1f
 	github.com/dadosjusbr/proto v0.0.0-20221212025627-91c60aa3cd12
 	github.com/stretchr/testify v1.7.1
 	golang.org/x/text v0.4.0
@@ -18,6 +17,7 @@ require (
 )
 
 require (
+	github.com/dadosjusbr/datapackage v0.0.0-20230808200654-76585d61e848
 	github.com/dadosjusbr/status v0.0.0-20230428151814-b605fe0e598f
 	github.com/frictionlessdata/datapackage-go v1.0.4 // indirect
 	github.com/frictionlessdata/tableschema-go v1.5.2 // indirect
