@@ -17,7 +17,7 @@ require (
 )
 
 require (
-	github.com/dadosjusbr/datapackage v0.0.0-20230808200654-76585d61e848
+	github.com/dadosjusbr/datapackage v0.0.0-20230818123816-40ae9a2f981f
 	github.com/dadosjusbr/status v0.0.0-20230428151814-b605fe0e598f
 	github.com/frictionlessdata/datapackage-go v1.0.4 // indirect
 	github.com/frictionlessdata/tableschema-go v1.5.2 // indirect

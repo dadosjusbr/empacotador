@@ -1,6 +1,8 @@
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/dadosjusbr/datapackage v0.0.0-20230808200654-76585d61e848 h1:SRUn4gYoG+hF7rz9RNFZrOpXlAdpDbBi+PoT3iyrpnQ=
 github.com/dadosjusbr/datapackage v0.0.0-20230808200654-76585d61e848/go.mod h1:o1FghJC46mR+lgHcQWVve/q84/SAd0WVdYMcgq88BBU=
+github.com/dadosjusbr/datapackage v0.0.0-20230818123816-40ae9a2f981f h1:d0z2q3Mr+Fe11svtLcy8T0xZUPDnit54oR4EhTUqBys=
+github.com/dadosjusbr/datapackage v0.0.0-20230818123816-40ae9a2f981f/go.mod h1:o1FghJC46mR+lgHcQWVve/q84/SAd0WVdYMcgq88BBU=
 github.com/dadosjusbr/proto v0.0.0-20221212025627-91c60aa3cd12 h1:ufl8nbCEo6g2VHUbedGy0gYk9Sgrynf9rcnzuSw4TEg=
 github.com/dadosjusbr/proto v0.0.0-20221212025627-91c60aa3cd12/go.mod h1:gPA7VxjEmyez/xtln4qBj+tM1NO0/zcw3ryjxTRNSco=
 github.com/dadosjusbr/status v0.0.0-20230428151814-b605fe0e598f h1:MHtPcEeoJ4CCOvFDzvYXU2AndoqiIvZdrOjWACaImLA=
