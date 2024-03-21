@@ -179,7 +179,7 @@ func categorizeRemunerations(rc *coleta.ResultadoColeta) ([]Remuneracao, Categor
 				Matricula:                c.Matricula,
 				Cargo:                    c.Funcao,
 				Lotacao:                  c.LocalTrabalho,
-				Valor:                    r.Valor,
+				Valor:                    datapackage.CustomFloat32(r.Valor),
 				DetalhamentoContracheque: r.Item,
 				CategoriaContracheque:    category,
 			})

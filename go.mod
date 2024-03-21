@@ -17,11 +17,11 @@ require (
 )
 
 require (
-	github.com/dadosjusbr/datapackage v0.0.0-20230818123816-40ae9a2f981f
+	github.com/dadosjusbr/datapackage v0.0.0-20240320203926-5f369dadd3a5
 	github.com/dadosjusbr/status v0.0.0-20230428151814-b605fe0e598f
 	github.com/frictionlessdata/datapackage-go v1.0.4 // indirect
 	github.com/frictionlessdata/tableschema-go v1.5.2 // indirect
-	github.com/gocarina/gocsv v0.0.0-20221212090504-363f27c9ceb6
+	github.com/gocarina/gocsv v0.0.0-20231116093920-b87c2d0e983a
 	github.com/kr/text v0.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/santhosh-tekuri/jsonschema v1.2.4 // indirect
