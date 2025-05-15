@@ -38,7 +38,12 @@ func main() {
 		status.ExitFromError(status.NewError(5, fmt.Errorf("error unmarshaling crawling resul from STDIN: %q\n\n %s ", err, string(erIN))))
 	}
 
-	csvRc := datapackage.NewResultadoColetaCSV_V2(er.Rc)
+	csvRc, err := datapackage.NewResultadoColetaCSV_V2(er.Rc)
+	if err != nil {
+		err = status.NewError(status.SystemError, fmt.Errorf("error creating CSV from crawling result: %q", err))
+		status.ExitFromError(err)
+	}
+
 	zipName := filepath.Join(outputPath, fmt.Sprintf("%s-%d-%d.zip", er.Rc.Coleta.Orgao, er.Rc.Coleta.Ano, er.Rc.Coleta.Mes))
 	if err := datapackage.ZipV2(zipName, csvRc, true); err != nil {
 		err = status.NewError(status.SystemError, fmt.Errorf("error zipping datapackage (%s):%q", zipName, err))
