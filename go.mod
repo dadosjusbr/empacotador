@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/dadosjusbr/proto v0.0.0-20221212025627-91c60aa3cd12
 	github.com/stretchr/testify v1.7.1
-	golang.org/x/text v0.4.0
+	golang.org/x/text v0.24.0
 	google.golang.org/protobuf v1.28.1
 )
 
@@ -17,7 +17,7 @@ require (
 )
 
 require (
-	github.com/dadosjusbr/datapackage v0.0.0-20240320203926-5f369dadd3a5
+	github.com/dadosjusbr/datapackage v0.0.0-20250513134737-6a2e74d9bb6c
 	github.com/dadosjusbr/status v0.0.0-20230428151814-b605fe0e598f
 	github.com/frictionlessdata/datapackage-go v1.0.4 // indirect
 	github.com/frictionlessdata/tableschema-go v1.5.2 // indirect

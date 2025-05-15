@@ -5,6 +5,8 @@ github.com/dadosjusbr/datapackage v0.0.0-20230818123816-40ae9a2f981f h1:d0z2q3Mr
 github.com/dadosjusbr/datapackage v0.0.0-20230818123816-40ae9a2f981f/go.mod h1:o1FghJC46mR+lgHcQWVve/q84/SAd0WVdYMcgq88BBU=
 github.com/dadosjusbr/datapackage v0.0.0-20240320203926-5f369dadd3a5 h1:Oh8goNtBxzPls8mvFt1GZ0ISSOcpINyip3eRknSMkK0=
 github.com/dadosjusbr/datapackage v0.0.0-20240320203926-5f369dadd3a5/go.mod h1:xDZc4jX8VDOP7SFo793x0Q8gjUjuMSOmNEUG/wqLKAw=
+github.com/dadosjusbr/datapackage v0.0.0-20250513134737-6a2e74d9bb6c h1:D6DEFcVxq1z8QA9fRiM59FVM/ujvnlPNX1gfXfw8I8I=
+github.com/dadosjusbr/datapackage v0.0.0-20250513134737-6a2e74d9bb6c/go.mod h1:tl1EjovjV8tJ6+6SzFAPy+cEbXauYtfv7G6Ima3FAl0=
 github.com/dadosjusbr/proto v0.0.0-20221212025627-91c60aa3cd12 h1:ufl8nbCEo6g2VHUbedGy0gYk9Sgrynf9rcnzuSw4TEg=
 github.com/dadosjusbr/proto v0.0.0-20221212025627-91c60aa3cd12/go.mod h1:gPA7VxjEmyez/xtln4qBj+tM1NO0/zcw3ryjxTRNSco=
 github.com/dadosjusbr/status v0.0.0-20230428151814-b605fe0e598f h1:MHtPcEeoJ4CCOvFDzvYXU2AndoqiIvZdrOjWACaImLA=
@@ -50,6 +52,8 @@ golang.org/x/exp v0.0.0-20221111094246-ab4555d3164f h1:dx+ByaHZgQORWfy/TumeLerCm
 golang.org/x/exp v0.0.0-20221111094246-ab4555d3164f/go.mod h1:CxIveKay+FTh1D0yPZemJVgC/95VzuuOLq5Qi4xnoYc=
 golang.org/x/text v0.4.0 h1:BrVqGRd7+k1DiOgtnFvAkoQEWQvBc25ouMJM6429SFg=
 golang.org/x/text v0.4.0/go.mod h1:mrYo+phRRbMaCq/xk9113O4dZlRixOauAjOtrjsXDZ8=
+golang.org/x/text v0.24.0 h1:dd5Bzh4yt5KYA8f9CJHCP4FB4D51c2c6JvN37xJJkJ0=
+golang.org/x/text v0.24.0/go.mod h1:L8rBsPeo2pSS+xqN0d5u2ikmjtmoJbDBT1b7nHvFCdU=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 google.golang.org/protobuf v1.26.0-rc.1/go.mod h1:jlhhOSvTdKEhbULTjvd4ARK9grFBp09yW+WbY/TyQbw=
 google.golang.org/protobuf v1.26.0/go.mod h1:9q0QmTI4eRPtz6boOQmLYwt+qCgq0jsYwAQnmE0givc=
