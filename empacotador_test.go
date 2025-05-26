@@ -52,7 +52,10 @@ func TestCategorizeRemunerations(t *testing.T) {
 		},
 	}
 
-	remunerations, countCategories := categorizeRemunerations(rc)
+	var micro map[string]string
+	var macro map[string]string
+
+	remunerations, countCategories := categorizeRemunerations(rc, micro, macro)
 
 	assert.Equal(t, remunerations[0].CategoriaContracheque, "base")
 	assert.Equal(t, remunerations[1].CategoriaContracheque, "base")
