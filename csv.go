@@ -20,6 +20,8 @@ type Remuneracao struct {
 	DetalhamentoContracheque string                    `csv:"detalhamento_contracheque" tableheader:"detalhamento_contracheque"`
 	CategoriaContracheque    string                    `csv:"categoria_contracheque" tableheader:"categoria_contracheque"`
 	Valor                    datapackage.CustomFloat32 `csv:"valor" tableheader:"valor"`
+	DesambiguacaoMicro       string                    `csv:"desambiguacao_micro" tableheader:"desambiguacao_micro"`
+	DesambiguacaoMacro       string                    `csv:"desambiguacao_macro" tableheader:"desambiguacao_macro"`
 }
 
 type Categoria struct {

@@ -2,12 +2,15 @@ package main
 
 import (
 	"archive/zip"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"unicode"
 
@@ -66,7 +69,17 @@ func main() {
 		er.Rc.Coleta.Arquivos = []string{bkpZip}
 	}
 
-	remunerations, countCategories := categorizeRemunerations(er.Rc)
+	desambiguacao_micro, err := getItems("desambiguacao_micro.json")
+	if err != nil {
+		status.ExitFromError(fmt.Errorf("error getting desambiguacao_micro: %w", err))
+	}
+
+	desambiguacao_macro, err := getItems("desambiguacao_macro.json")
+	if err != nil {
+		status.ExitFromError(fmt.Errorf("error getting desambiguacao_macro: %w", err))
+	}
+
+	remunerations, countCategories := categorizeRemunerations(er.Rc, desambiguacao_micro, desambiguacao_macro)
 
 	remunerationsFile := filepath.Join(outputPath, "remuneracoes.csv")
 	if err = toCSVFile(&remunerations, remunerationsFile); err != nil {
@@ -144,7 +157,7 @@ func zipFiles(filename string, basePath string, files []string) error {
 	return nil
 }
 
-func categorizeRemunerations(rc *coleta.ResultadoColeta) ([]Remuneracao, Categoria) {
+func categorizeRemunerations(rc *coleta.ResultadoColeta, micro, macro map[string]string) ([]Remuneracao, Categoria) {
 	var remunerations []Remuneracao
 	var cat Categoria
 
@@ -164,6 +177,7 @@ func categorizeRemunerations(rc *coleta.ResultadoColeta) ([]Remuneracao, Categor
 			result, _, _ := transform.String(t, strings.TrimSpace(r.Item))
 
 			var category string
+			dmicro, dmacro := "", ""
 
 			// Definindo a categoria do contracheque
 			if r.Natureza == coleta.Remuneracao_D {
@@ -175,6 +189,8 @@ func categorizeRemunerations(rc *coleta.ResultadoColeta) ([]Remuneracao, Categor
 			} else {
 				category = "outras"
 				cat.Outras++
+				dmicro = micro[sanitizarItem(r.Item)]
+				dmacro = macro[sanitizarItem(r.Item)]
 			}
 			remunerations = append(remunerations, Remuneracao{
 				Ano:                      rc.Coleta.Ano,
@@ -187,8 +203,63 @@ func categorizeRemunerations(rc *coleta.ResultadoColeta) ([]Remuneracao, Categor
 				Valor:                    datapackage.CustomFloat32(r.Valor),
 				DetalhamentoContracheque: r.Item,
 				CategoriaContracheque:    category,
+				DesambiguacaoMicro:       dmicro,
+				DesambiguacaoMacro:       dmacro,
 			})
 		}
 	}
 	return remunerations, cat
+}
+
+// Sanitizando as rubricas e nomes:
+// deixando-as em minúsculo, sem acentos, pontuações, caracteres especiais e espaços duplos
+func sanitizarItem(item string) string {
+	// Converte para minúsculas
+	item = strings.ToLower(item)
+
+	// Remove acentos
+	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
+	item, _, _ = transform.String(t, item)
+
+	// Remove pontuação
+	item = strings.Map(func(r rune) rune {
+		if strings.ContainsRune(".,;:!?-", r) {
+			return -1
+		}
+		return r
+	}, item)
+
+	// Remove caracteres especiais
+	re := regexp.MustCompile("[^a-zA-Z0-9 ]")
+	item = re.ReplaceAllString(item, "")
+
+	// Remove espaços duplos e espaços no início/final da string
+	item = strings.Join(strings.Fields(item), " ")
+
+	return item
+}
+
+// Realiza o download do json com as rubricas desambiguadas
+func getItems(file string) (map[string]string, error) {
+	// json com rubricas desambiguadas
+	url := fmt.Sprintf("https://raw.githubusercontent.com/dadosjusbr/desambiguador/main/%s", file)
+
+	res, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("error getting items from %s: %w", url, err)
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response body: %w", err)
+	}
+
+	var itemJson map[string]string
+
+	// unmarshall
+	if err := json.Unmarshal(body, &itemJson); err != nil {
+		return nil, fmt.Errorf("error unmarshalling json: %w", err)
+	}
+
+	return itemJson, nil
 }
